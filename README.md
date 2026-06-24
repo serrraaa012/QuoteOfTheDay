@@ -27,11 +27,13 @@ A beautiful Android application that displays inspiring quotes daily with the ab
 - CardView
 
 ## Screenshots
-<img width="388" height="593" alt="image" src="https://github.com/user-attachments/assets/72d677e2-e46a-40d2-8f83-67db7dd1e4ee" />
-<img width="387" height="593" alt="image" src="https://github.com/user-attachments/assets/dbb23f41-6371-4ade-bf41-53815e829942" />
+<img width="396" height="612" alt="Screenshot 2026-06-23 025541" src="https://github.com/user-attachments/assets/4dd8e462-107c-4e38-9441-bdfd8142ac6c" />
+<img width="387" height="593" alt="Screenshot 2026-06-23 025644" src="https://github.com/user-attachments/assets/102f36dc-27d0-40c2-8a5a-94c9efe4d6f7" />
+
+
 
 ## Installation
 
 1. Clone the repository:
    ```bash
-  https://github.com/serrraaa012/codsoft_task2.git
+ https://github.com/serrraaa012/codsoft_task2.git
