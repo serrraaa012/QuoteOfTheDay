@@ -1,7 +1,8 @@
 package com.example.quoteoftheday;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,21 +17,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FavoritesActivity extends AppCompatActivity {
+    private RecyclerView recyclerView;
     private QuoteAdapter adapter;
     private List<Quote> favoriteQuotes;
     private QuoteDatabase database;
+    private ImageView backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         setContentView(R.layout.activity_favorites);
 
         initializeViews();
+        setupBackButton();
         loadFavorites();
     }
 
     private void initializeViews() {
-        RecyclerView recyclerView = findViewById(R.id.favoritesRecyclerView);
+        recyclerView = findViewById(R.id.favoritesRecyclerView);
+        backButton = findViewById(R.id.backButton);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         favoriteQuotes = new ArrayList<>();
         adapter = new QuoteAdapter(favoriteQuotes, this::removeFavorite);
@@ -38,7 +48,14 @@ public class FavoritesActivity extends AppCompatActivity {
         database = QuoteDatabase.getInstance(this);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    private void setupBackButton() {
+        backButton.setOnClickListener(v -> {
+            // Go back to MainActivity
+            finish();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
+    }
+
     private void loadFavorites() {
         new Thread(() -> {
             favoriteQuotes.clear();
@@ -52,7 +69,6 @@ public class FavoritesActivity extends AppCompatActivity {
         }).start();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private void removeFavorite(Quote quote) {
         new Thread(() -> {
             database.quoteDao().delete(quote);
@@ -69,5 +85,11 @@ public class FavoritesActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadFavorites();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

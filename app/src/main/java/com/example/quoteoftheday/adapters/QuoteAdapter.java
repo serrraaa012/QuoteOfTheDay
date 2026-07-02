@@ -1,6 +1,5 @@
 package com.example.quoteoftheday.adapters;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,8 @@ import com.example.quoteoftheday.models.Quote;
 import java.util.List;
 
 public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.QuoteViewHolder> {
-    private final List<Quote> quotes;
-    private final OnRemoveFavoriteListener listener;
+    private List<Quote> quotes;
+    private OnRemoveFavoriteListener listener;
 
     public interface OnRemoveFavoriteListener {
         void onRemove(Quote quote);
@@ -36,7 +35,6 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.QuoteViewHol
         return new QuoteViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull QuoteViewHolder holder, int position) {
         Quote quote = quotes.get(position);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -7,4 +8,26 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="dark_bg_start">#0f0c29</color>
+    <color name="dark_bg_mid">#302b63</color>
+    <color name="dark_bg_end">#24243e</color>
+
+
+    <color name="card_bg">#1a1a2e</color>
+
+
+    <color name="button_new_quote">#1a1a2e</color>
+    <color name="button_share">#1a1a2e</color>
+    <color name="button_favorite">#1a1a2e</color>
+    <color name="button_favorites">#1a1a2e</color>
+
+
+    <color name="button_text">#FFFFFF</color>
+
+    <color name="accent_gold">#FFD700</color>
+    <color name="quote_text">#E0E0E0</color>
+    <color name="author_text">#FFD700</color>
+    <color name="date_text">#8888AA</color>
 </resources>

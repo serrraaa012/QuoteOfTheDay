@@ -29,10 +29,16 @@ public class MainActivity extends AppCompatActivity {
     private List<Quote> quoteList;
     private Random random;
     private static final String TAG = "MainActivity";
+    private int lastQuoteIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         setContentView(R.layout.activity_main);
 
         initializeViews();
@@ -63,23 +69,34 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadQuotes() {
         quoteList = new ArrayList<>();
+        quoteList.add(new Quote("Some secrets are better kept secrets", "Sarah Abbas"));
+        quoteList.add(new Quote("Tough World, Rough Opinions", "Sarah Abbas"));
+        quoteList.add(new Quote("Love is all about thorns and roses", "Sarah Abbas"));
+        quoteList.add(new Quote("Humans tend to blame themselves when misfortune strikes their loved ones.", "Sarah Abbas"));
+        quoteList.add(new Quote("Love is what you give without any expectations", "Sarah Abbas"));
+        quoteList.add(new Quote("It's better to be silent than being violent", "Sarah Abbas"));
+        quoteList.add(new Quote("Life is what happens to you while you're busy making other plans.", "John Lennon"));
+        quoteList.add(new Quote("I love you. Thorns and all.", "Sarah J. Mass"));
+        quoteList.add(new Quote("A person who never learns never earns.", "Sarah Abbas"));
+        quoteList.add(new Quote("The secret of getting ahead is getting started.", "Mark Twain"));
         quoteList.add(new Quote("The only way to do great work is to love what you do.", "Steve Jobs"));
         quoteList.add(new Quote("In the middle of difficulty lies opportunity.", "Albert Einstein"));
         quoteList.add(new Quote("Success is not final, failure is not fatal: it is the courage to continue that counts.", "Winston Churchill"));
         quoteList.add(new Quote("The best time to plant a tree was 20 years ago. The second best time is now.", "Chinese Proverb"));
-        quoteList.add(new Quote("It does not matter how slowly you go as long as you do not stop.", "Confucius"));
         quoteList.add(new Quote("The future belongs to those who believe in the beauty of their dreams.", "Eleanor Roosevelt"));
-        quoteList.add(new Quote("Life is what happens to you while you're busy making other plans.", "John Lennon"));
-        quoteList.add(new Quote("The only impossible journey is the one you never begin.", "Tony Robbins"));
-        quoteList.add(new Quote("Believe you can and you're halfway there.", "Theodore Roosevelt"));
-        quoteList.add(new Quote("The secret of getting ahead is getting started.", "Mark Twain"));
 
         Log.d(TAG, "Loaded " + quoteList.size() + " quotes");
     }
 
     private void displayRandomQuote() {
         if (quoteList != null && !quoteList.isEmpty()) {
-            int index = random.nextInt(quoteList.size());
+            int index;
+
+            do {
+                index = random.nextInt(quoteList.size());
+            } while (index == lastQuoteIndex && quoteList.size() > 1);
+
+            lastQuoteIndex = index;
             currentQuote = quoteList.get(index);
 
             String quoteText = "\"" + currentQuote.getText() + "\"";
@@ -88,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             quoteTextView.setText(quoteText);
             authorTextView.setText(authorText);
 
-            Log.d(TAG, "Displaying quote: " + quoteText);
+            Log.d(TAG, "Displaying quote #" + (index + 1) + ": " + quoteText);
             Log.d(TAG, "Author: " + authorText);
         } else {
             Log.e(TAG, "Quote list is empty!");
@@ -135,33 +152,52 @@ public class MainActivity extends AppCompatActivity {
 
     private void saveFavorite() {
         if (currentQuote != null) {
+            favoriteButton.setEnabled(false);
+            favoriteButton.setText("Saving...");
+
             new Thread(() -> {
-                QuoteDao dao = database.quoteDao();
+                try {
+                    QuoteDao dao = database.quoteDao();
 
-                // Check if already in favorites
-                List<Quote> favorites = dao.getAllFavorites();
-                boolean exists = false;
-                for (Quote q : favorites) {
-                    if (q.getText().equals(currentQuote.getText()) &&
-                            q.getAuthor().equals(currentQuote.getAuthor())) {
-                        exists = true;
-                        break;
+                    // Check if already in favorites
+                    List<Quote> favorites = dao.getAllFavorites();
+                    boolean exists = false;
+                    for (Quote q : favorites) {
+                        if (q.getText().equals(currentQuote.getText()) &&
+                                q.getAuthor().equals(currentQuote.getAuthor())) {
+                            exists = true;
+                            break;
+                        }
                     }
-                }
 
-                if (!exists) {
-                    Quote favoriteQuote = new Quote(currentQuote.getText(), currentQuote.getAuthor());
-                    dao.insert(favoriteQuote);
+                    final boolean finalExists = exists;
+
+                    if (!exists) {
+                        Quote favoriteQuote = new Quote(currentQuote.getText(), currentQuote.getAuthor());
+                        dao.insert(favoriteQuote);
+                        runOnUiThread(() -> {
+                            Toast.makeText(MainActivity.this,
+                                    "⭐ Quote saved to favorites!", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "Quote saved to favorites");
+                            favoriteButton.setEnabled(true);
+                            favoriteButton.setText(R.string.favorite);
+                        });
+                    } else {
+                        runOnUiThread(() -> {
+                            Toast.makeText(MainActivity.this,
+                                    "⚠️ Quote already in favorites!", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "Quote already in favorites");
+                            favoriteButton.setEnabled(true);
+                            favoriteButton.setText(R.string.favorite);
+                        });
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error saving favorite: " + e.getMessage());
                     runOnUiThread(() -> {
                         Toast.makeText(MainActivity.this,
-                                "Quote saved to favorites!", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Quote saved to favorites");
-                    });
-                } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(MainActivity.this,
-                                "Quote already in favorites!", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Quote already in favorites");
+                                "Error saving quote!", Toast.LENGTH_SHORT).show();
+                        favoriteButton.setEnabled(true);
+                        favoriteButton.setText(R.string.favorite);
                     });
                 }
             }).start();
