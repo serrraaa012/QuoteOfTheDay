@@ -76,4 +76,4 @@ I included my own voice because I believe that **inspiration shouldn't be limite
 
 **Clone the repository:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/QuoteOfTheDay.git
+ https://github.com/serrraaa012/QuoteOfTheDay.git
